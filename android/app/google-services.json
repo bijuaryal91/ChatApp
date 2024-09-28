@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018080072687",
+    "project_id": "samparka-dd1c7",
+    "storage_bucket": "samparka-dd1c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018080072687:android:624a93189aa4e782a95c1a",
+        "android_client_info": {
+          "package_name": "com.example.samparka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYH3HWXeqO5w1Rcqgivd-4di_pQyAS2LU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
