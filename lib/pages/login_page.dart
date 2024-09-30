@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:samparka/auth/services/auth_services.dart';
 import 'package:samparka/components/my_button.dart';
 import 'package:samparka/components/my_field.dart';
 
-class LoginPage extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _pwController = TextEditingController();
+class LoginPage extends StatefulWidget {
   final void Function()? onTap;
-  LoginPage({super.key, required this.onTap});
 
-  void login() {}
+  const LoginPage({super.key, required this.onTap});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _pwController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,12 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 24),
               MyButton(
                 text: "Login",
-                onPressed: login,
+                onPressed: () async {
+                  await AuthServices().signin(
+                      email: _emailController.text,
+                      password: _pwController.text,
+                      context: context);
+                },
               ),
               const SizedBox(height: 16),
               Row(
@@ -55,7 +67,7 @@ class LoginPage extends StatelessWidget {
                     style: TextStyle(color: Colors.grey),
                   ),
                   GestureDetector(
-                    onTap: onTap,
+                    onTap: widget.onTap,
                     child: const Text(
                       "Sign Up",
                       style: TextStyle(

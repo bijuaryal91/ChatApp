@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:samparka/auth/services/auth_services.dart';
 import 'package:samparka/components/my_button.dart';
 import 'package:samparka/components/my_field.dart';
 
@@ -8,8 +9,6 @@ class RegisterPage extends StatelessWidget {
   final TextEditingController _cpwController = TextEditingController();
   final void Function()? onTap;
   RegisterPage({super.key, this.onTap});
-
-  void register() {}
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,24 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(height: 24),
               MyButton(
                 text: "Signup",
-                onPressed: register,
+                onPressed: () async {
+                  if (_pwController.text == _cpwController.text) {
+                    await AuthServices().signup(
+                        email: _emailController.text,
+                        password: _pwController.text,
+                        context: context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Password doesn't Matched!",
+                          textAlign: TextAlign.center,
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 16),
               Row(
