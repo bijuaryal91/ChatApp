@@ -1,11 +1,18 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samparka/auth/login_or_register.dart';
-import 'package:samparka/pages/IndexPage.dart';
+import 'package:samparka/services/auth/login_or_register.dart';
+import 'package:samparka/pages/index_page.dart';
 
 class AuthServices {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
+
   Future<void> signin({
     required String email,
     required String password,
@@ -14,11 +21,15 @@ class AuthServices {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      _firestore.collection("Users").doc(userCredential.user!.uid).set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': email,
+        },
+      );
       await Future.delayed(const Duration(seconds: 1));
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => const Indexpage()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => Indexpage()));
     } on FirebaseAuthException catch (e) {
       String message = '';
       switch (e.code) {
@@ -68,11 +79,16 @@ class AuthServices {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      _firestore.collection("Users").doc(userCredential.user!.uid).set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': email,
+        },
+      );
       await Future.delayed(const Duration(seconds: 1));
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => const Indexpage()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => Indexpage()));
     } on FirebaseAuthException catch (e) {
       String message = '';
       switch (e.code) {

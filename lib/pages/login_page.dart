@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samparka/auth/services/auth_services.dart';
+import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/components/my_button.dart';
 import 'package:samparka/components/my_field.dart';
 

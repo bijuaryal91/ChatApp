@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:samparka/auth/login_or_register.dart';
+import 'package:samparka/services/auth/login_or_register.dart';
 import 'package:samparka/firebase_options.dart';
 
 void main() async {
