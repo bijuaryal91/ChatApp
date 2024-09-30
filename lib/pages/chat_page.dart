@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samparka/components/chat_bubble.dart';
+import 'package:samparka/components/chatbox.dart';
 import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/services/chat/chat_service.dart';
 

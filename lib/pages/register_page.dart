@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samparka/services/auth/auth_services.dart';
-import 'package:samparka/components/my_button.dart';
-import 'package:samparka/components/my_field.dart';
+import 'package:samparka/components/button.dart';
+import 'package:samparka/components/textfield.dart';
 
 class RegisterPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();

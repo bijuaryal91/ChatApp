@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samparka/services/auth/auth_services.dart';
-import 'package:samparka/components/my_button.dart';
-import 'package:samparka/components/my_field.dart';
+import 'package:samparka/components/button.dart';
+import 'package:samparka/components/textfield.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
