@@ -106,6 +106,15 @@ class _ChatScreenState extends State<ChatScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+
+        // Check if there are any messages, if so, scroll to the bottom
+        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => scrollDown(),
+          );
+        }
+
         return ListView(
           controller: _scrollController,
           children:
