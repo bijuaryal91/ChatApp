@@ -24,9 +24,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      routes: {
-        '/': (context) => const SplashScreen(),
-      },
+      home: const SplashScreen(),
     );
   }
 }

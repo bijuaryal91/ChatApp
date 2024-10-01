@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:samparka/pages/agreement_page.dart';
 import 'package:samparka/services/auth/login_or_register.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const LoginOrRegister(),
+        builder: (context) => const AgreementPage(),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:samparka/const/colors.dart';
 import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/components/button.dart';
 import 'package:samparka/components/textfield.dart';
@@ -13,42 +14,47 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: textWhite,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Create an Account',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Container(
+                width: 100,
+                height: 100,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage("assets/background.jpg"),
+                    fit: BoxFit
+                        .cover, // Ensures the image fills the circle properly
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               MyField(
                 labelText: "Email",
                 hintText: "",
                 obscure: false,
                 controller: _emailController,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               MyField(
                 labelText: "Password",
                 hintText: "",
                 obscure: true,
                 controller: _pwController,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               MyField(
                 labelText: "Confirm Password",
                 hintText: "",
                 obscure: true,
                 controller: _cpwController,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 14),
               MyButton(
                 text: "Signup",
                 onPressed: () async {
@@ -64,7 +70,7 @@ class RegisterPage extends StatelessWidget {
                           "Password doesn't Matched!",
                           textAlign: TextAlign.center,
                         ),
-                        backgroundColor: Colors.red,
+                        backgroundColor: error,
                       ),
                     );
                   }
@@ -76,14 +82,14 @@ class RegisterPage extends StatelessWidget {
                 children: [
                   const Text(
                     'Already have an account? ',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: textGrey),
                   ),
                   GestureDetector(
                     onTap: onTap,
                     child: const Text(
                       "Login",
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: textGrey,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

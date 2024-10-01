@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:samparka/const/colors.dart';
 
 class MyButton extends StatelessWidget {
   final String text;
@@ -11,10 +12,10 @@ class MyButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-          backgroundColor: Colors.blue),
+          backgroundColor: primaryColor),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: textWhite),
       ),
     );
   }
