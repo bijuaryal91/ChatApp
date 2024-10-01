@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:samparka/components/chatbox.dart';
@@ -31,13 +32,17 @@ class _ChatScreenState extends State<ChatScreen> {
   String? _replyMessage; // To store the message being replied to
   String?
       _replyMessageSender; // To store the sender of the message being replied to
+  bool _showEmojiPicker = false;
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        Future.delayed(const Duration(seconds: 1), () => scrollDown());
+        // Only scroll down when the text field is focused and the emoji picker is not visible
+        if (!_showEmojiPicker) {
+          Future.delayed(const Duration(seconds: 1), () => scrollDown());
+        }
       }
     });
 
@@ -76,6 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         _replyMessage = null; // Clear the reply message after sending
         _replyMessageSender = null;
+        _showEmojiPicker = false;
       });
     }
     scrollDown();
@@ -86,6 +92,22 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       _replyMessage = message;
       _replyMessageSender = sender;
+    });
+  }
+
+  void _onEmojiSelected(Emoji emoji) {
+    setState(() {
+      _controller.text += emoji.emoji; // Append selected emoji to input
+    });
+  }
+
+  void _toggleEmojiPicker() {
+    setState(() {
+      _showEmojiPicker = !_showEmojiPicker;
+      // Unfocus the text field when emoji picker is opened
+      if (_showEmojiPicker) {
+        _focusNode.unfocus(); // Unfocus to prevent scrolling
+      }
     });
   }
 
@@ -112,6 +134,13 @@ class _ChatScreenState extends State<ChatScreen> {
           if (_replyMessage != null)
             _buildReplyPreview(), // Show reply preview if a message is selected
           _buildUserInput(),
+          if (_showEmojiPicker) // Show emoji picker when toggled
+            SizedBox(
+              height: 250,
+              child: EmojiPicker(
+                onEmojiSelected: (category, emoji) => _onEmojiSelected(emoji),
+              ),
+            ),
         ],
       ),
     );
@@ -161,9 +190,9 @@ class _ChatScreenState extends State<ChatScreen> {
         if (snapshot.hasError) {
           return const Text("Error");
         }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        // if (snapshot.connectionState == ConnectionState.waiting) {
+        //   return const Center(child: CircularProgressIndicator());
+        // }
 
         // Check if there are any messages, if so, scroll to the bottom
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
@@ -224,7 +253,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildUserInput() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 50.0, left: 8.0),
+      padding: const EdgeInsets.only(bottom: 20.0, left: 8.0),
       child: Row(
         children: [
           Expanded(
@@ -237,7 +266,12 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.emoji_emotions_outlined),
+            onPressed: _toggleEmojiPicker, // Toggle emoji picker
+          ),
+          const SizedBox(width: 8),
           Container(
             decoration: const BoxDecoration(
               color: Colors.green,
