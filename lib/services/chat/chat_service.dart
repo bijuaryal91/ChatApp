@@ -15,28 +15,36 @@ class ChatService {
   }
 
 // Send Message
-  Future<void> sendMessage(String receiverId, message) async {
+  Future<void> sendMessage(String receiverId, String message,
+      {String? replyMessage, String? replyMessageSender}) async {
     final String currentUserId = _auth.currentUser!.uid;
     final String currentUserEmail = _auth.currentUser!.email!;
     final Timestamp timestamp = Timestamp.now();
-    // Create new message
-    Message newMessage = Message(
-        senderId: currentUserId,
-        senderEmail: currentUserEmail,
-        receiverId: receiverId,
-        message: message,
-        timestamp: timestamp);
 
+    // Create a new message object with optional reply message fields
+    Message newMessage = Message(
+      senderId: currentUserId,
+      senderEmail: currentUserEmail,
+      receiverId: receiverId,
+      message: message,
+      timestamp: timestamp,
+      replyMessage: replyMessage, // Add replyMessage (if provided)
+      replyMessageSender:
+          replyMessageSender, // Add replyMessageSender (if provided)
+    );
+
+    // Sort user IDs to generate a consistent chat room ID
     List<String> ids = [currentUserId, receiverId];
     ids.sort();
     String chatId = ids.join("_");
 
+    // Add the new message to the Firestore chat room
     await _fireStore
         .collection('chat_rooms')
         .doc(chatId)
         .collection("messages")
         .add(
-          newMessage.toMap(),
+          newMessage.toMap(), // Convert message to map and add to Firestore
         );
   }
 
