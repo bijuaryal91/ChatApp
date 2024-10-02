@@ -28,6 +28,44 @@ class _ChatScreenState extends State<ChatScreen> {
   final AuthServices _authServices = AuthServices();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  Map<String, double> _slideOffsets = {};
+
+  // This method updates the slide offset of a message
+  void _onHorizontalDragUpdate(
+      String messageId, DragUpdateDetails details, bool isCurrentUser) {
+    setState(() {
+      // Update the slide offset based on drag direction
+      double delta = details.primaryDelta ?? 0;
+      _slideOffsets[messageId] = (_slideOffsets[messageId] ?? 0) + delta;
+
+      // Limit the slide offset to a maximum of 100 pixels
+      if (_slideOffsets[messageId]! > 100) {
+        _slideOffsets[messageId] = 100;
+      } else if (_slideOffsets[messageId]! < -100) {
+        _slideOffsets[messageId] = -100;
+      }
+    });
+  }
+
+  // This method is called when the drag ends
+  void _onHorizontalDragEnd(
+      String messageId, bool isCurrentUser, String message, String sender) {
+    // Trigger reply action if slid enough
+    if (isCurrentUser && _slideOffsets[messageId]! < -50) {
+      // Reply on left swipe for current user's message
+      selectReplyMessage(message, sender);
+    } else if (!isCurrentUser && _slideOffsets[messageId]! > 50) {
+      // Reply on right swipe for received message
+      selectReplyMessage(message, sender);
+    }
+
+    // Reset slide offset after a short delay
+    Future.delayed(const Duration(milliseconds: 200), () {
+      setState(() {
+        _slideOffsets[messageId] = 0;
+      });
+    });
+  }
 
   String? _replyMessage; // To store the message being replied to
   String?
@@ -202,30 +240,45 @@ class _ChatScreenState extends State<ChatScreen> {
           );
         }
 
-        return ListView(
-          controller: _scrollController,
-          children:
-              snapshot.data!.docs.map((doc) => _messageItems(doc)).toList(),
-        );
+        if (snapshot.hasData && snapshot.data != null) {
+          return ListView(
+            controller: _scrollController,
+            children:
+                snapshot.data!.docs.map((doc) => _messageItems(doc)).toList(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text("An error occurred: ${snapshot.error}"));
+        } else {
+          // While waiting for data or if it's null
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
 
   Widget _messageItems(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
     bool isCurrentUser =
         data['senderId'] == _authServices.getCurrentUser()!.uid;
     var alignment =
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
 
+    // Message ID to track each message's slide offset
+    String messageId = doc.id;
+    _slideOffsets[messageId] = _slideOffsets[messageId] ?? 0;
+
     return GestureDetector(
-      // Wrap the message in a GestureDetector
-      onTap: () {
-        // Call selectReplyMessage when a message is tapped
-        selectReplyMessage(data['message'], data['senderId']);
+      onHorizontalDragUpdate: (details) {
+        _onHorizontalDragUpdate(messageId, details, isCurrentUser);
       },
-      child: Container(
+      onHorizontalDragEnd: (details) {
+        _onHorizontalDragEnd(
+            messageId, isCurrentUser, data['message'], data['senderId']);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform:
+            Matrix4.translationValues(_slideOffsets[messageId] ?? 0, 0, 0),
         alignment: alignment,
         child: Column(
           crossAxisAlignment:
@@ -238,7 +291,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   message: data['message'],
                   reply: data['replyMessage'],
                   isCurrentUser: isCurrentUser),
-
             if (data['replyMessage'] == null &&
                 data['replyMessageSender'] == null)
               ChatBubble(
