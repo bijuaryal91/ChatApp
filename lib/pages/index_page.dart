@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:samparka/components/usertile.dart';
 import 'package:samparka/pages/chat_page.dart';
 import 'package:samparka/services/auth/auth_services.dart';
@@ -20,7 +22,7 @@ class Indexpage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              AuthServices().signout(context: context);
+              _authServices.signout(context: context);
             },
             icon: const Icon(Icons.logout),
           ),
@@ -31,7 +33,7 @@ class Indexpage extends StatelessWidget {
   }
 
   Widget _getUsersList() {
-    return StreamBuilder(
+    return StreamBuilder<List<Map<String, dynamic>>>(
       stream: _chatService.getUserStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -55,22 +57,91 @@ class Indexpage extends StatelessWidget {
   }
 
   Widget _buildUser(Map<String, dynamic> userData, BuildContext context) {
+    // Check if the user is not the current user
     if (userData['email'] != _authServices.getCurrentUser()!.email) {
-      return UserTile(
-        text: userData['email'],
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(
-                  receiverEmail: userData['email'],
-                  receiverId: userData['uid']),
-            ),
+      return StreamBuilder<Map<String, dynamic>?>(
+        stream: _chatService.getLastMessageStream(
+            userData['uid'], _authServices.getCurrentUser()!.uid),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListTile(
+              title: Text(userData['email']),
+              subtitle: const Text("......"),
+            );
+          } else if (snapshot.hasError) {
+            return ListTile(
+              title: Text(userData['email']),
+              subtitle: const Text('Error fetching last message'),
+            );
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return UserTile(
+              text: userData['email'],
+              lastMessage:
+                  'No messages yet', // Default message if no messages found
+              lastMessageColor: Colors.grey.shade600,
+              lastMessageWeight: FontWeight.normal,
+              time: '', // No time to display if no messages
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                      receiverEmail: userData['email'],
+                      receiverId: userData['uid'],
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+
+          // Handle the fetched last message
+          final lastMessageData = snapshot.data!;
+          String lastMessageText = lastMessageData['message'] ?? '';
+          bool isSentByCurrentUser = lastMessageData['senderId'] ==
+              _authServices.getCurrentUser()!.uid;
+
+          // Prepend 'You: ' if the last message is sent by the current user
+          if (isSentByCurrentUser) {
+            lastMessageText = 'You: $lastMessageText';
+          }
+
+          return UserTile(
+            text: userData['email'],
+            lastMessage: lastMessageText,
+            lastMessageColor:
+                isSentByCurrentUser ? Colors.grey.shade600 : Colors.black,
+            lastMessageWeight:
+                isSentByCurrentUser ? FontWeight.normal : FontWeight.bold,
+            time: _formatTimestamp(lastMessageData[
+                'timestamp']), // Format and pass the timestamp if needed
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                    receiverEmail: userData['email'],
+                    receiverId: userData['uid'],
+                  ),
+                ),
+              );
+            },
           );
         },
       );
     } else {
-      return Container();
+      return Container(); // Return an empty container for the current user
     }
+  }
+
+  String _formatTimestamp(Timestamp timestamp) {
+    // Convert Timestamp to DateTime
+    DateTime dateTime = timestamp.toDate();
+
+    // Format the DateTime to a string
+    String formattedTime =
+        DateFormat.jm().format(dateTime); // This will return  "11:12 PM" format
+
+    return formattedTime;
   }
 }

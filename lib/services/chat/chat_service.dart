@@ -14,7 +14,28 @@ class ChatService {
     });
   }
 
-// Send Message
+  Stream<Map<String, dynamic>?> getLastMessageStream(
+      String userId, String otherUserId) {
+    List<String> ids = [userId, otherUserId];
+    ids.sort();
+    String chatId = ids.join("_");
+
+    return _fireStore
+        .collection("chat_rooms")
+        .doc(chatId)
+        .collection("messages")
+        .orderBy("timestamp", descending: true)
+        .limit(1)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first.data(); // Return the last message
+      }
+      return null; // Return null if there are no messages
+    });
+  }
+
+  // Send Message
   Future<void> sendMessage(String receiverId, String message,
       {String? replyMessage, String? replyMessageSender}) async {
     final String currentUserId = _auth.currentUser!.uid;
@@ -48,7 +69,8 @@ class ChatService {
         );
   }
 
-  Stream<QuerySnapshot> getMessages(String userId, otherUserId) {
+  // Get Messages
+  Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {
     List<String> ids = [userId, otherUserId];
     ids.sort();
     String chatId = ids.join("_");
@@ -58,5 +80,28 @@ class ChatService {
         .collection("messages")
         .orderBy("timestamp", descending: false)
         .snapshots();
+  }
+
+  // Get Last Message
+  Future<Map<String, dynamic>?> getLastMessage(
+      String userId, String otherUserId) async {
+    List<String> ids = [userId, otherUserId];
+    ids.sort();
+    String chatId = ids.join("_");
+
+    QuerySnapshot querySnapshot = await _fireStore
+        .collection("chat_rooms")
+        .doc(chatId)
+        .collection("messages")
+        .orderBy("timestamp", descending: true) // Get the latest message first
+        .limit(1) // Only get the last message
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // Return the last message as a map
+      return querySnapshot.docs.first.data() as Map<String, dynamic>;
+    } else {
+      return null; // No messages found
+    }
   }
 }

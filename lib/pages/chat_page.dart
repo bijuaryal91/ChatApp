@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:samparka/components/chatbox.dart';
 import 'package:samparka/const/colors.dart';
 import 'package:samparka/services/auth/auth_services.dart';
@@ -28,7 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final AuthServices _authServices = AuthServices();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-  Map<String, double> _slideOffsets = {};
+  final Map<String, double> _slideOffsets = {};
 
   // This method updates the slide offset of a message
   void _onHorizontalDragUpdate(
@@ -288,19 +289,36 @@ class _ChatScreenState extends State<ChatScreen> {
             if (data['replyMessage'] != null &&
                 data['replyMessageSender'] != null)
               ChatBubble(
-                  message: data['message'],
-                  reply: data['replyMessage'],
-                  isCurrentUser: isCurrentUser),
+                message: data['message'],
+                reply: data['replyMessage'],
+                isCurrentUser: isCurrentUser,
+                timestamp: formatTimestamp(data['timestamp']),
+              ),
             if (data['replyMessage'] == null &&
                 data['replyMessageSender'] == null)
               ChatBubble(
-                  message: data['message'],
-                  reply: "",
-                  isCurrentUser: isCurrentUser),
+                message: data['message'],
+                reply: "",
+                isCurrentUser: isCurrentUser,
+                timestamp: formatTimestamp(
+                  data['timestamp'],
+                ),
+              ),
           ],
         ),
       ),
     );
+  }
+
+  String formatTimestamp(Timestamp timestamp) {
+    // Convert Timestamp to DateTime
+    DateTime dateTime = timestamp.toDate();
+
+    // Format the DateTime to a string
+    String formattedTime =
+        DateFormat.jm().format(dateTime); // This will return  "11:12 PM" format
+
+    return formattedTime;
   }
 
   Widget _buildUserInput() {
