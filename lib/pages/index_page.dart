@@ -86,6 +86,7 @@ class Indexpage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChatScreen(
+                      userName: userData['fname'] + " " + userData['lname'],
                       receiverEmail: userData['email'],
                       receiverId: userData['uid'],
                     ),
@@ -120,6 +121,7 @@ class Indexpage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatScreen(
+                    userName: userData['fname'] + ' ' + userData['lname'],
                     receiverEmail: userData['email'],
                     receiverId: userData['uid'],
                   ),

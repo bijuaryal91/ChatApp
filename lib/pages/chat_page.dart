@@ -9,11 +9,13 @@ import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/services/chat/chat_service.dart';
 
 class ChatScreen extends StatefulWidget {
+  final String userName;
   final String receiverEmail;
   final String receiverId;
 
   const ChatScreen({
     super.key,
+    required this.userName,
     required this.receiverEmail,
     required this.receiverId,
   });
@@ -156,9 +158,26 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 8, 136, 255),
         foregroundColor: Colors.white,
-        title: Text(
-          widget.receiverEmail,
-          style: const TextStyle(fontSize: 18),
+        titleSpacing: -5, // Reduce the gap between back button and title
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.grey.shade200,
+              child: Icon(
+                Icons.person,
+                color: Colors.grey.shade600,
+                size: 30,
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              widget.userName,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ],
         ),
         actions: const [
           Icon(Icons.call),
