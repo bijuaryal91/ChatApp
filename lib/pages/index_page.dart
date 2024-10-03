@@ -136,6 +136,8 @@ class Indexpage extends StatelessWidget {
   }
 
   Widget _buildUser(Map<String, dynamic> userData, BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     // Check if the user is not the current user
     if (userData['email'] != _authServices.getCurrentUser()!.email) {
       return StreamBuilder<Map<String, dynamic>?>(
@@ -189,8 +191,11 @@ class Indexpage extends StatelessWidget {
           return UserTile(
             text: userData['fname'] + " " + userData['lname'],
             lastMessage: lastMessageText,
-            lastMessageColor:
-                isSentByCurrentUser ? Colors.grey.shade600 : Colors.black,
+            lastMessageColor: isSentByCurrentUser
+                ? Colors.grey.shade600
+                : themeProvider.isDarkTheme
+                    ? Colors.white
+                    : Colors.black,
             lastMessageWeight:
                 isSentByCurrentUser ? FontWeight.normal : FontWeight.bold,
             time: _formatTimestamp(lastMessageData[

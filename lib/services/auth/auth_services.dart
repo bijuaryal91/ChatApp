@@ -21,12 +21,14 @@ class AuthServices {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      _firestore.collection("Users").doc(userCredential.user!.uid).set(
-        {
-          'uid': userCredential.user!.uid,
-          'email': email,
-        },
-      );
+      // _firestore.collection("Users").doc(userCredential.user!.uid).set(
+      //   {
+      //     'uid': userCredential.user!.uid,
+      //     'email': email,
+      //     'fname': fname,
+      //     'lname': lname,
+      //   },
+      // );
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => Indexpage()));
