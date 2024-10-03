@@ -65,17 +65,17 @@ class Indexpage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return ListTile(
-              title: Text(userData['email']),
+              title: Text(userData['fname'] + " " + userData['lname']),
               subtitle: const Text("......"),
             );
           } else if (snapshot.hasError) {
             return ListTile(
-              title: Text(userData['email']),
+              title: Text(userData['fname'] + " " + userData['lname']),
               subtitle: const Text('Error fetching last message'),
             );
           } else if (!snapshot.hasData || snapshot.data == null) {
             return UserTile(
-              text: userData['email'],
+              text: userData['fname'] + " " + userData['lname'],
               lastMessage:
                   'No messages yet', // Default message if no messages found
               lastMessageColor: Colors.grey.shade600,
@@ -107,7 +107,7 @@ class Indexpage extends StatelessWidget {
           }
 
           return UserTile(
-            text: userData['email'],
+            text: userData['fname'] + " " + userData['lname'],
             lastMessage: lastMessageText,
             lastMessageColor:
                 isSentByCurrentUser ? Colors.grey.shade600 : Colors.black,

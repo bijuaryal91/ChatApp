@@ -75,6 +75,8 @@ class AuthServices {
     required String email,
     required String password,
     required BuildContext context,
+    required String firstName,
+    required String lastName,
   }) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -84,6 +86,8 @@ class AuthServices {
         {
           'uid': userCredential.user!.uid,
           'email': email,
+          'fname': firstName,
+          'lname': lastName,
         },
       );
       await Future.delayed(const Duration(seconds: 1));
