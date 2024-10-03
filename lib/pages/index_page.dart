@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:samparka/components/usertile.dart';
 import 'package:samparka/pages/chat_page.dart';
+import 'package:samparka/pages/settings_page.dart';
+import 'package:samparka/provider/theme_provider.dart';
 import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/services/chat/chat_service.dart';
 
@@ -14,21 +17,97 @@ class Indexpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
+      backgroundColor: themeProvider.isDarkTheme ? Colors.black : Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 8, 136, 255),
+        backgroundColor: themeProvider.isDarkTheme
+            ? const Color.fromARGB(255, 41, 40, 40)
+            : const Color.fromARGB(255, 8, 136, 255),
         foregroundColor: Colors.white,
         title: const Text("Users"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              _authServices.signout(context: context);
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
       ),
       body: _getUsersList(),
+      // Adding the drawer here
+      drawer: Drawer(
+        child: Container(
+          color:
+              themeProvider.isDarkTheme ? Colors.grey.shade900 : Colors.white,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              // Add a header for the drawer (optional)
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: themeProvider.isDarkTheme
+                      ? Colors.black
+                      : const Color.fromARGB(255, 8, 136, 255),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Menu',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Add a list of navigation items or options
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: Text(
+                  'Profile',
+                  style: TextStyle(
+                      color: themeProvider.isDarkTheme
+                          ? Colors.white
+                          : Colors.black),
+                ),
+                onTap: () {
+                  // Handle Profile navigation
+                  Navigator.pop(context); // Close the drawer
+                  // Navigate to profile page
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: Text(
+                  'Settings',
+                  style: TextStyle(
+                      color: themeProvider.isDarkTheme
+                          ? Colors.white
+                          : Colors.black),
+                ),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPage()),
+                  ); // Navigate to settings page
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: Text(
+                  'Logout',
+                  style: TextStyle(
+                      color: themeProvider.isDarkTheme
+                          ? Colors.white
+                          : Colors.black),
+                ),
+                onTap: () {
+                  _authServices.signout(context: context); // Handle logout
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

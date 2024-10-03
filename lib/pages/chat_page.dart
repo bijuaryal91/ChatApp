@@ -3,8 +3,10 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:samparka/components/chatbox.dart';
 import 'package:samparka/const/colors.dart';
+import 'package:samparka/provider/theme_provider.dart';
 import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/services/chat/chat_service.dart';
 
@@ -154,9 +156,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      backgroundColor: themeProvider.isDarkTheme ? Colors.black : Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 8, 136, 255),
+        backgroundColor: themeProvider.isDarkTheme
+            ? const Color.fromARGB(255, 41, 40, 40)
+            : const Color.fromARGB(255, 8, 136, 255),
         foregroundColor: Colors.white,
         titleSpacing: -5, // Reduce the gap between back button and title
         title: Row(
@@ -341,12 +347,17 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildUserInput() {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0, left: 8.0),
       child: Row(
         children: [
           Expanded(
             child: TextField(
+              style: TextStyle(
+                color: themeProvider.isDarkTheme ? Colors.white : Colors.black,
+              ),
               controller: _controller,
               focusNode: _focusNode,
               decoration: const InputDecoration(
@@ -357,6 +368,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           const SizedBox(width: 8),
           IconButton(
+            color: Colors.grey,
             icon: const Icon(Icons.emoji_emotions_outlined),
             onPressed: _toggleEmojiPicker, // Toggle emoji picker
           ),

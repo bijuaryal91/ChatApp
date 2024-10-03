@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:samparka/provider/theme_provider.dart';
 
 class MyField extends StatelessWidget {
   final String labelText;
@@ -14,8 +16,12 @@ class MyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return TextField(
       controller: controller,
+      style: TextStyle(
+        color: themeProvider.isDarkTheme ? Colors.white : Colors.black,
+      ),
       decoration: InputDecoration(
         labelText: labelText,
         border: const OutlineInputBorder(),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:samparka/provider/theme_provider.dart';
 
 class UserTile extends StatelessWidget {
   final String text; // User name
@@ -20,15 +22,19 @@ class UserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color:
+              themeProvider.isDarkTheme ? Colors.grey.shade900 : Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: themeProvider.isDarkTheme
+                  ? Colors.white.withOpacity(0.1)
+                  : Colors.black.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 10,
               offset: const Offset(0, 2),
@@ -55,10 +61,12 @@ class UserTile extends StatelessWidget {
                 children: [
                   Text(
                     text,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: themeProvider.isDarkTheme
+                          ? Colors.white
+                          : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 4),

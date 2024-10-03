@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:samparka/const/colors.dart';
+import 'package:samparka/provider/theme_provider.dart';
 import 'package:samparka/services/auth/auth_services.dart';
 import 'package:samparka/components/button.dart';
 import 'package:samparka/components/textfield.dart';
@@ -20,8 +22,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: textWhite,
+      backgroundColor: themeProvider.isDarkTheme ? textBlack : textWhite,
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
