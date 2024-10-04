@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:samparka/components/usertile.dart';
 import 'package:samparka/pages/chat_page.dart';
+import 'package:samparka/pages/profile_page.dart';
 import 'package:samparka/pages/settings_page.dart';
 import 'package:samparka/provider/theme_provider.dart';
 import 'package:samparka/services/auth/auth_services.dart';
@@ -71,6 +72,11 @@ class Indexpage extends StatelessWidget {
                   // Handle Profile navigation
                   Navigator.pop(context); // Close the drawer
                   // Navigate to profile page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfilePage()),
+                  );
                 },
               ),
               ListTile(
