@@ -27,19 +27,20 @@ A simple, lightweight chat application built with Flutter. This project demonstr
 ## Screenshots
 
 ### Login Page
-![Login Page](screenshots/login.jpg)
+<img src="screenshots/login.jpg" alt="Login Page" width="300"/>
 
 ### User Page
-![User Page](screenshots/user.jpg)
+<img src="screenshots/user.jpg" alt="User Page" width="300"/>
 
 ### Chat Page
-![Chat Page](screenshots/chat.jpg)
+<img src="screenshots/chat.jpg" alt="Chat Page" width="300"/>
 
 ### Setting Page
-![Setting Page](screenshots/setting.jpg)
+<img src="screenshots/setting.jpg" alt="Setting Page" width="300"/>
 
 ### Darkmode
-![Darkmode](screenshots/darkmode.jpg)
+<img src="screenshots/darkmode.jpg" alt="Darkmode" width="300"/>
+
 
 ---
 
