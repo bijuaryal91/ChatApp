@@ -12,7 +12,6 @@ A simple, lightweight chat application built with Flutter. This project demonstr
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ---
 
